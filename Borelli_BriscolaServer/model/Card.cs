@@ -57,6 +57,11 @@ namespace Borelli_BriscolaServer.model {
             return toRet;
         }
 
+
+        public static explicit operator Card(string s) {
+            string[] fields = s.Split('_');
+            return new Card((eValue)Enum.Parse(typeof(eValue), fields[0]), (eSuits)Enum.Parse(typeof(eSuits), fields[1]));
+        }
         //TODO: mettere gia' qui il controllo se sia briscola (?)
         public int CompareTo(Card c) { //1 this > c; -1 c > this
             if (Suit == c.Suit) { //se il seme non e' lo stesso (senza contare le briscole) vince sempre il primo che ha messo giu'
