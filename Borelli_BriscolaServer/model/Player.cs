@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 
 namespace Borelli_BriscolaServer.model {
-    public class Player {
+    public class Player : IEquatable<Player> {
         public string Name { get; private set; }
         public List<Card> Hand { get; private set; }
         public byte Score { get; internal set; }
@@ -44,6 +44,17 @@ namespace Borelli_BriscolaServer.model {
             }
 
             Hand.Add(c);
+        }
+
+
+
+        public bool Equals(Player p) {
+            if (p == null) {
+                return false;
+            } else if (p == this) {
+                return true;
+            } else
+                return p.ClientSocket.Equals(this.ClientSocket);
         }
     }
 }
