@@ -46,6 +46,7 @@
     <Compile Include="model\Card.cs" />
     <Compile Include="model\CardDeck.cs" />
     <Compile Include="model\Player.cs" />
+    <Compile Include="model\Table.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
