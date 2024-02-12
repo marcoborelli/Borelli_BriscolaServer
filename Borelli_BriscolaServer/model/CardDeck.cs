@@ -39,6 +39,10 @@ namespace Borelli_BriscolaServer.model {
             throw new Exception("Il mazzo di carte e' gia' vuoto");
         }
 
+        public byte GetDeckCount() {
+            return (byte)_deck.Count;
+        }
+
 
 
         private void CreateRandomDeck() {
