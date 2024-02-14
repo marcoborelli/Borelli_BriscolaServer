@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 
@@ -24,17 +23,13 @@ namespace Borelli_BriscolaServer.model {
                 Play();
             }
 
-            string username;
-            using (StreamReader reader = new StreamReader(socket.GetStream())) {
-                //reg:username=<nome>
-                username = reader.ReadLine().Split(':')[1].Split('=')[1];
-            }
+            //reg:username=<nome>
+            string username = Program.ReadLineStream(socket).Split('=')[1];
 
-            List<Card> pCards = new List<Card> { CardDeck.Instance.DrawCard(), CardDeck.Instance.DrawCard(), CardDeck.Instance.DrawCard() };
-            using (StreamWriter writer = new StreamWriter(socket.GetStream())) {
-                //reg:deck=<val1>;<val2>;<val3>
-                writer.WriteLine($"reg:deck={String.Join(";", pCards)}");
             }
+            List<Card> pCards = new List<Card> { CardDeck.Instance.DrawCard(), CardDeck.Instance.DrawCard(), CardDeck.Instance.DrawCard() }; //TODO da vedere perche' se si disconnette le carte sono gia' state pescate
+            //reg:deck=<val1>;<val2>;<val3>
+            Program.WriteLineStream(socket, $"reg:deck={String.Join(";", pCards)}");
 
             Players.Add(new Player(username, socket, pCards));
         }
@@ -51,10 +46,8 @@ namespace Borelli_BriscolaServer.model {
                         for (byte j = i; j < i + Players.Count; j++) {
                             Card tmp = CardDeck.Instance.DrawCard();
 
-                            using (StreamWriter writer = new StreamWriter(Players[i].ClientSocket.GetStream())) {
-                                //play:cardDrawed=<val>
-                                writer.WriteLine($"play:cardDrawed={tmp}");
-                            }
+                            //play:cardDrawed=<val>
+                            Program.WriteLineStream(Players[i].ClientSocket, $"play:cardDrawed={tmp}");
                             Players[i].DrawCard(tmp);
                         }
                     } else
@@ -62,13 +55,11 @@ namespace Borelli_BriscolaServer.model {
 
 
                     while (i < i + Players.Count) { //gioco effettivo in cui ognuno mette giu' le carte
-                        string playedCard;
                         int playerIndex = i < Players.Count ? i : i - Players.Count;
 
-                        using (StreamReader reader = new StreamReader(Players[playerIndex].ClientSocket.GetStream())) { //per vedere la carta che e' stata giocata
-                            //play:cardToPlay=<val>
-                            playedCard = reader.ReadLine().Split(':')[1].Split('=')[1];
-                        }
+                        //play:cardToPlay=<val>
+                        string playedCard = Program.ReadLineStream(Players[playerIndex].ClientSocket);
+
                         TableHand.Add((Card)playedCard);
 
 
@@ -84,11 +75,9 @@ namespace Borelli_BriscolaServer.model {
                     byte sum = 0;
                     TableHand.ForEach(x => sum += x.GetPointValue());
                     Players[i].Score += sum;
-                    using (StreamWriter writer = new StreamWriter(Players[i].ClientSocket.GetStream())) {
-                        //play:handWinner=<username>
-                        writer.WriteLine($"play:handWinner={Players[i].Name}");
-                    }
 
+                    //play:handWinner=<username>
+                    Program.WriteLineStream(Players[i].ClientSocket, $"play:handWinner={Players[i].Name}");
                 }
             } catch (Exception e) {
                 throw new Exception(e.Message);
@@ -108,9 +97,7 @@ namespace Borelli_BriscolaServer.model {
                     continue;
                 }
 
-                using (StreamWriter writer = new StreamWriter(Players[j].ClientSocket.GetStream())) {
-                    writer.WriteLine(message);
-                }
+                Program.WriteLineStream(Players[j].ClientSocket, message);
             }
         }
 
