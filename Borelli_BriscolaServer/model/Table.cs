@@ -18,7 +18,7 @@ namespace Borelli_BriscolaServer.model {
             Id = id;
         }
 
-        public void AddPlayer(TcpClient socket) {
+        public bool AddPlayer(TcpClient socket) {
             if (Players.Count >= Players.Capacity) { //TODO rivedere (?)
                 Play();
             }
@@ -26,12 +26,18 @@ namespace Borelli_BriscolaServer.model {
             //reg:username=<nome>
             string username = Program.ReadLineStream(socket).Split('=')[1];
 
+            //reg:res=<ok|error>
+            if (Players.Exists(u => u.Name == username)) {
+                Program.WriteLineStream(socket, "reg:res=error");
+                return false;
             }
+            Program.WriteLineStream(socket, "reg:res=ok");
             List<Card> pCards = new List<Card> { CardDeck.Instance.DrawCard(), CardDeck.Instance.DrawCard(), CardDeck.Instance.DrawCard() }; //TODO da vedere perche' se si disconnette le carte sono gia' state pescate
             //reg:deck=<val1>;<val2>;<val3>
             Program.WriteLineStream(socket, $"reg:deck={String.Join(";", pCards)}");
 
             Players.Add(new Player(username, socket, pCards));
+            return true;
         }
 
         public void Play() {
