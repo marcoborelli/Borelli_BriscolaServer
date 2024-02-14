@@ -20,7 +20,7 @@ namespace Borelli_BriscolaServer.model {
         }
 
         public void AddPlayer(TcpClient socket) {
-            if (Players.Count >= Players.Capacity) {
+            if (Players.Count >= Players.Capacity) { //TODO rivedere (?)
                 Play();
             }
 
@@ -40,7 +40,7 @@ namespace Borelli_BriscolaServer.model {
         }
 
         public void Play() {
-            int i = 0;
+            byte i = 0;
             bool first = true;
 
             try {
@@ -48,7 +48,7 @@ namespace Borelli_BriscolaServer.model {
                     TableHand.Clear();
 
                     if (!first) { //pescaggio carte
-                        for (int j = i; j < i + Players.Count; j++) {
+                        for (byte j = i; j < i + Players.Count; j++) {
                             Card tmp = CardDeck.Instance.DrawCard();
 
                             using (StreamWriter writer = new StreamWriter(Players[i].ClientSocket.GetStream())) {
@@ -78,7 +78,7 @@ namespace Borelli_BriscolaServer.model {
                         i++;
                     }
 
-                    i = Players.IndexOf(Assess()); //in questo modo il turno alla mano dopo ripartira' da colui che ha preso per ultimo
+                    i = (byte)Players.IndexOf(Assess()); //in questo modo il turno alla mano dopo ripartira' da colui che ha preso per ultimo
 
                     //al vincitore vengono asseganti tutti i punti di quella mano
                     byte sum = 0;
@@ -103,7 +103,7 @@ namespace Borelli_BriscolaServer.model {
 
 
         private void SendMessageInBroadcastExceptAt(int exceptIndex, string message) { //-1 in exceptIndex vuol dire che lo si vuole mandare a tutti
-            for (int j = 0; j < Players.Count; j++) {
+            for (byte j = 0; j < Players.Count; j++) {
                 if (j == exceptIndex) {
                     continue;
                 }
@@ -122,11 +122,10 @@ namespace Borelli_BriscolaServer.model {
             Player tmpWinPl = Players[0];
             Card tmpWinCr = TableHand[0];
 
-            for (int i = 1; i < Players.Count; i++) { //parto da 1 perche' la 0 gia' la tengo come se fosse la migliore
+            for (byte i = 1; i < Players.Count; i++) { //parto da 1 perche' la 0 gia' la tengo come se fosse la migliore
                 tmpWinPl = AssessCouple(tmpWinPl, tmpWinCr, Players[i], TableHand[i]);
 
-                //TODO: da rifare con la .Equals.
-                if (tmpWinPl == Players[i]) { //Se il migliore giocatore e' uguale a quello del turno attuale e' perche' e' cambiato. Bisogna quindi cambiare anche la miglior carta
+                if (Players[i].Equals(tmpWinPl)) { //Se il migliore giocatore e' uguale a quello del turno attuale e' perche' e' cambiato. Bisogna quindi cambiare anche la miglior carta
                     tmpWinCr = TableHand[i];
                 }
             }
