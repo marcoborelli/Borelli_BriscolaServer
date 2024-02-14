@@ -159,5 +159,9 @@ namespace Borelli_BriscolaServer.model {
 
 
         public bool Equals(Table t) => t?.Id == this.Id;
+
+        public override string ToString() {
+            return $"{Id},{Players.Capacity},{Players.Count}";
+        }
     }
 }
