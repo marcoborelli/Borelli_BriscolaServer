@@ -77,7 +77,7 @@ namespace Borelli_BriscolaServer.model {
                         SendMessageInBroadcastExceptAt(-1, $"play:turn={Players[playerIndex].Name}");
 
                         //play:cardToPlay=<val>
-                        string playedCard = Program.ReadLineStream(Players[playerIndex].ClientSocket);
+                        string playedCard = Program.ReadLineStream(Players[playerIndex].ClientSocket).Split('=')[1];
 
                         TableHand.Add((Card)playedCard);
 
@@ -96,7 +96,7 @@ namespace Borelli_BriscolaServer.model {
                     Players[i].Score += sum;
 
                     //play:handWinner=<username>
-                    Program.WriteLineStream(Players[i].ClientSocket, $"play:handWinner={Players[i].Name}");
+                    SendMessageInBroadcastExceptAt(-1, $"play:handWinner={Players[i].Name}");
                 }
             } catch (Exception e) {
                 throw new Exception(e.Message);
@@ -106,7 +106,7 @@ namespace Borelli_BriscolaServer.model {
             byte puntiMax = Players.Max(x => x.Score);
             List<Player> vincitori = Players.Where(x => x.Score == puntiMax).ToList();
 
-            SendMessageInBroadcastExceptAt(-1, $"end:winner={String.Join(";", vincitori)}");
+            SendMessageInBroadcastExceptAt(-1, $"end:winner={String.Join(";", vincitori)};");
         }
 
 
