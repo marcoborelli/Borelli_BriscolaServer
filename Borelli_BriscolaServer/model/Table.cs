@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Borelli_BriscolaServer.model {
     public class Table : IEquatable<Table> {
@@ -19,10 +20,6 @@ namespace Borelli_BriscolaServer.model {
         }
 
         public bool AddPlayer(TcpClient socket) {
-            if (Players.Count >= Players.Capacity) { //TODO rivedere (?)
-                Play();
-            }
-
             //reg:username=<nome>
             string username = Program.ReadLineStream(socket).Split('=')[1];
 
@@ -39,6 +36,7 @@ namespace Borelli_BriscolaServer.model {
                 SendMessageInBroadcastExceptAt(-1, $"reg:update={String.Join(";", Players)};"); //si aggiornano anche gli altri giocatori che se ne e' unito uno nuovo
             } else {
                 SendMessageInBroadcastExceptAt(-1, "reg:state=start");
+                Task.Run(Play);
             }
 
             return true;
