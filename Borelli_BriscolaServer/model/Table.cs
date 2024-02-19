@@ -77,7 +77,9 @@ namespace Borelli_BriscolaServer.model {
                         //play:cardToPlay=<val>
                         string playedCard = Program.ReadLineStream(Players[playerIndex].ClientSocket).Split('=')[1];
 
-                        TableHand.Add((Card)playedCard);
+                        //il giocatore gioca la carta
+                        byte cardIndex = (byte)Players[playerIndex].Hand.IndexOf((Card)playedCard);
+                        TableHand.Add(Players[playerIndex].PlayCard(cardIndex));
 
 
                         //play:cardPlayed=<val>;player=<val>
