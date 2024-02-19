@@ -32,11 +32,8 @@ namespace Borelli_BriscolaServer.model {
                 return false;
             }
             Program.WriteLineStream(socket, "reg:res=ok");
-            List<Card> pCards = new List<Card> { CardDeck.Instance.DrawCard(), CardDeck.Instance.DrawCard(), CardDeck.Instance.DrawCard() }; //TODO da vedere perche' se si disconnette le carte sono gia' state pescate
-            //reg:deck=<val1>;<val2>;<val3>
-            Program.WriteLineStream(socket, $"reg:deck={String.Join(";", pCards)}");
+            Players.Add(new Player(username, socket));
 
-            Players.Add(new Player(username, socket, pCards));
             return true;
         }
 
@@ -45,6 +42,11 @@ namespace Borelli_BriscolaServer.model {
             bool first = true;
 
             try {
+                for (byte q = 0; q < 3; q++) { //distribuzione carte iniziali
+                    for (byte j = 0; j < Players.Count; j++) {
+                        Players[j].DrawCard(CardDeck.Instance.DrawCard());
+                    }
+                }
                 while (CardDeck.Instance.GetDeckCount() != 0) {
                     TableHand.Clear();
 

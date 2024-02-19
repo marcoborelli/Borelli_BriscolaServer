@@ -9,14 +9,12 @@ namespace Borelli_BriscolaServer.model {
         public byte Score { get; internal set; }
         public TcpClient ClientSocket { get; set; }
 
-        public Player(string name, TcpClient socket, List<Card> initHand) {
+        public Player(string name, TcpClient socket) {
             Name = name;
             Score = 0;
 
-            if (initHand.Count != 3) {
-                throw new Exception("Carte inziali non valide");
-            }
-            Hand = initHand;
+            Hand = new List<Card>();
+            Hand.Capacity = 3;
 
             ClientSocket = socket;
         }
