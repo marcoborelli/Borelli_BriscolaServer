@@ -50,11 +50,8 @@ namespace Borelli_BriscolaServer.model {
 
                     if (!first) { //pescaggio carte
                         for (byte j = i; j < i + Players.Count; j++) {
-                            Card tmp = CardDeck.Instance.DrawCard();
-
-                            //play:cardDrawed=<val>
-                            Program.WriteLineStream(Players[i].ClientSocket, $"play:cardDrawed={tmp}");
-                            Players[i].DrawCard(tmp);
+                            int playerIndex = j < Players.Count ? j : j - Players.Count;
+                            Players[playerIndex].DrawCard(CardDeck.Instance.DrawCard());
                         }
                     } else
                         first = false;

@@ -43,6 +43,8 @@ namespace Borelli_BriscolaServer.model {
                 throw new Exception("Non si possono pescare carte, se ne hanno gia' minimo 3 in mano");
             }
 
+            //play:cardDrawed=<val>
+            Program.WriteLineStream(ClientSocket, $"play:cardDrawed={c}");
             Hand.Add(c);
         }
 
