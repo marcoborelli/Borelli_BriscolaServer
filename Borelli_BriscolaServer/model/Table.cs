@@ -47,10 +47,10 @@ namespace Borelli_BriscolaServer.model {
                         Players[j].DrawCard(CardDeck.Instance.DrawCard());
                     }
                 }
-                while (CardDeck.Instance.GetDeckCount() != 0) {
+                while (CardDeck.Instance.GetDeckCount() != 0 || Players[0].Hand.Count != 0) {
                     TableHand.Clear();
 
-                    if (!first) { //pescaggio carte
+                    if (!first && CardDeck.Instance.GetDeckCount() != 0) { //pescaggio carte
                         for (byte j = i; j < i + Players.Count; j++) {
                             int playerIndex = j < Players.Count ? j : j - Players.Count;
                             Players[playerIndex].DrawCard(CardDeck.Instance.DrawCard());
@@ -59,7 +59,8 @@ namespace Borelli_BriscolaServer.model {
                         first = false;
 
 
-                    while (i < i + Players.Count) { //gioco effettivo in cui ognuno mette giu' le carte
+                    byte origCount = (byte)(i + Players.Count);
+                    while (i < origCount) { //gioco effettivo in cui ognuno mette giu' le carte
                         int playerIndex = i < Players.Count ? i : i - Players.Count;
 
                         //play:cardToPlay=<val>
