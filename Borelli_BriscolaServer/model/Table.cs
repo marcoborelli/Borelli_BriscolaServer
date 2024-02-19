@@ -34,6 +34,13 @@ namespace Borelli_BriscolaServer.model {
             Program.WriteLineStream(socket, "reg:res=ok");
             Players.Add(new Player(username, socket));
 
+            if (Players.Count != Players.Capacity) {
+                //reg:update=<username>;...
+                SendMessageInBroadcastExceptAt(-1, $"reg:update={String.Join(";", Players)};"); //si aggiornano anche gli altri giocatori che se ne e' unito uno nuovo
+            } else {
+                SendMessageInBroadcastExceptAt(-1, "reg:state=start");
+            }
+
             return true;
         }
 
@@ -47,6 +54,10 @@ namespace Borelli_BriscolaServer.model {
                         Players[j].DrawCard(CardDeck.Instance.DrawCard());
                     }
                 }
+
+                SendMessageInBroadcastExceptAt(-1, $"play:briscola={CardDeck.Instance.Briscola}");
+
+
                 while (CardDeck.Instance.GetDeckCount() != 0 || Players[0].Hand.Count != 0) {
                     TableHand.Clear();
 
@@ -62,6 +73,8 @@ namespace Borelli_BriscolaServer.model {
                     byte origCount = (byte)(i + Players.Count);
                     while (i < origCount) { //gioco effettivo in cui ognuno mette giu' le carte
                         int playerIndex = i < Players.Count ? i : i - Players.Count;
+
+                        SendMessageInBroadcastExceptAt(-1, $"play:turn={Players[playerIndex].Name}");
 
                         //play:cardToPlay=<val>
                         string playedCard = Program.ReadLineStream(Players[playerIndex].ClientSocket);
