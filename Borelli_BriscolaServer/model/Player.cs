@@ -56,5 +56,9 @@ namespace Borelli_BriscolaServer.model {
             } else
                 return p.ClientSocket.Equals(this.ClientSocket);
         }
+
+        public override string ToString() {
+            return $"{Name}";
+        }
     }
 }

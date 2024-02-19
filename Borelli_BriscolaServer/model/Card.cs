@@ -21,7 +21,7 @@ namespace Borelli_BriscolaServer.model {
         Batons //bastoni
     }
 
-    public class Card : IComparable<Card> {
+    public class Card : IComparable<Card>, IEquatable<Card> {
         public eValue Value { get; private set; }
         public eSuits Suit { get; private set; }
 
@@ -74,6 +74,16 @@ namespace Borelli_BriscolaServer.model {
                 return 1;
             } else {
                 return 0;
+            }
+        }
+
+        public bool Equals(Card c) {
+            if (c == null) {
+                return false;
+            } else if (c == this) {
+                return true;
+            } else {
+                return (c.Suit == Suit && c.Value == Value);
             }
         }
 
