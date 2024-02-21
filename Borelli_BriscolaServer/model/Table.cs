@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Borelli_BriscolaServer.model {
     public class Table : IEquatable<Table> {
@@ -47,6 +48,8 @@ namespace Borelli_BriscolaServer.model {
             bool first = true;
 
             try {
+                SendMessageInBroadcastExceptAt(-1, $"play:players={String.Join(";", Players)};");
+
                 for (byte q = 0; q < 3; q++) { //distribuzione carte iniziali
                     for (byte j = 0; j < Players.Count; j++) {
                         Players[j].DrawCard(CardDeck.Instance.DrawCard());
@@ -87,6 +90,8 @@ namespace Borelli_BriscolaServer.model {
 
                         i++;
                     }
+
+                    Thread.Sleep(3000);
 
                     i = (byte)Players.IndexOf(Assess((byte)(origCount - Players.Count))); //in questo modo il turno alla mano dopo ripartira' da colui che ha preso per ultimo
 
