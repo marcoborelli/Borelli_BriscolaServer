@@ -88,7 +88,7 @@ namespace Borelli_BriscolaServer.model {
                         i++;
                     }
 
-                    i = (byte)Players.IndexOf(Assess()); //in questo modo il turno alla mano dopo ripartira' da colui che ha preso per ultimo
+                    i = (byte)Players.IndexOf(Assess((byte)(origCount - Players.Count))); //in questo modo il turno alla mano dopo ripartira' da colui che ha preso per ultimo
 
                     //al vincitore vengono asseganti tutti i punti di quella mano
                     byte sum = 0;
@@ -120,19 +120,26 @@ namespace Borelli_BriscolaServer.model {
             }
         }
 
-        private Player Assess() {
+        private Player Assess(byte baseIndex) {
             if (Players.Count < 2) {
                 throw new Exception("Bisogna essere almeno in due per giocare");
             }
 
-            Player tmpWinPl = Players[0];
-            Card tmpWinCr = TableHand[0];
+            byte cardIndex = 0; //il tavolo ha come 0 il primo che gioca quindi si parte sempre da 0
 
-            for (byte i = 1; i < Players.Count; i++) { //parto da 1 perche' la 0 gia' la tengo come se fosse la migliore
-                tmpWinPl = AssessCouple(tmpWinPl, tmpWinCr, Players[i], TableHand[i]);
+            Player tmpWinPl = Players[baseIndex];
+            Card tmpWinCr = TableHand[cardIndex];
 
-                if (Players[i].Equals(tmpWinPl)) { //Se il migliore giocatore e' uguale a quello del turno attuale e' perche' e' cambiato. Bisogna quindi cambiare anche la miglior carta
-                    tmpWinCr = TableHand[i];
+            baseIndex++; //parto da 1 in piu' perche' il primo gia' lo tengo come se fosse il migliore
+            cardIndex++;
+
+            for (byte i = baseIndex; i < (baseIndex - 1) + Players.Count; i++, cardIndex++) { //nella condizione tolgo 1 perche' mi serve il dato 'originale'
+                byte playerIndex = baseIndex < Players.Count ? baseIndex : (byte)(baseIndex - Players.Count);
+
+                tmpWinPl = AssessCouple(tmpWinPl, tmpWinCr, Players[playerIndex], TableHand[cardIndex]);
+
+                if (Players[playerIndex].Equals(tmpWinPl)) { //Se il migliore giocatore e' uguale a quello del turno attuale e' perche' e' cambiato. Bisogna quindi cambiare anche la miglior carta
+                    tmpWinCr = TableHand[cardIndex];
                 }
             }
 
@@ -148,10 +155,14 @@ namespace Borelli_BriscolaServer.model {
             } else if (!IsBriscola(c1) && IsBriscola(c2)) {
                 res = p2;
             } else {
-                if (c1.CompareTo(c2) == -1) {
-                    res = p2;
-                } else if (c1.CompareTo(c2) == 1) {
+                if (c1.Suit != c2.Suit) {
                     res = p1;
+                } else {
+                    if (c1.CompareTo(c2) == -1) {
+                        res = p2;
+                    } else if (c1.CompareTo(c2) == 1) {
+                        res = p1;
+                    }
                 }
             }
 

@@ -64,7 +64,7 @@ namespace Borelli_BriscolaServer.model {
         }
         //TODO: mettere gia' qui il controllo se sia briscola (?)
         public int CompareTo(Card c) { //1 this > c; -1 c > this
-            if (Suit == c.Suit) { //se il seme non e' lo stesso (senza contare le briscole) vince sempre il primo che ha messo giu'
+            if (Suit != c.Suit) { //se il seme non e' lo stesso (senza contare le briscole) vince sempre il primo che ha messo giu'
                 return 1;
             }
 
