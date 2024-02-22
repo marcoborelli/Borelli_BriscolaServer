@@ -139,7 +139,7 @@ namespace Borelli_BriscolaServer.model {
             cardIndex++;
 
             for (byte i = baseIndex; i < (baseIndex - 1) + Players.Count; i++, cardIndex++) { //nella condizione tolgo 1 perche' mi serve il dato 'originale'
-                byte playerIndex = baseIndex < Players.Count ? baseIndex : (byte)(baseIndex - Players.Count);
+                byte playerIndex = i < Players.Count ? i : (byte)(i - Players.Count);
 
                 tmpWinPl = AssessCouple(tmpWinPl, tmpWinCr, Players[playerIndex], TableHand[cardIndex]);
 
