@@ -3,23 +3,11 @@ using System.Collections.Generic;
 
 namespace Borelli_BriscolaServer.model {
     public class CardDeck {
-        private static CardDeck _instance;
         private List<Card> _deck;
         public Card Briscola { get; private set; }
 
 
-        public static CardDeck Instance {
-            get {
-                if (_instance == null) {
-                    _instance = new CardDeck();
-                }
-                return _instance;
-            }
-        }
-
-
-
-        private CardDeck() {
+        public CardDeck() {
             _deck = new List<Card>();
 
             CreateRandomDeck();

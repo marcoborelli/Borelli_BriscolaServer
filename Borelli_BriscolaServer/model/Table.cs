@@ -9,11 +9,14 @@ namespace Borelli_BriscolaServer.model {
     public class Table : IEquatable<Table> {
         public List<Player> Players { get; private set; }
         private List<Card> TableHand { get; set; }
+        private CardDeck Deck { get; set; }
         public string Id { get; private set; }
 
         public Table(string id, byte numMaxPlayer = 2) {
             Players = new List<Player>();
             TableHand = new List<Card>();
+
+            Deck = new CardDeck();
 
             Players.Capacity = numMaxPlayer;
             TableHand.Capacity = numMaxPlayer;
@@ -52,20 +55,20 @@ namespace Borelli_BriscolaServer.model {
 
                 for (byte q = 0; q < 3; q++) { //distribuzione carte iniziali
                     for (byte j = 0; j < Players.Count; j++) {
-                        Players[j].DrawCard(CardDeck.Instance.DrawCard());
+                        Players[j].DrawCard(Deck.DrawCard());
                     }
                 }
 
-                SendMessageInBroadcastExceptAt(-1, $"play:briscola={CardDeck.Instance.Briscola}");
+                SendMessageInBroadcastExceptAt(-1, $"play:briscola={Deck.Briscola}");
 
 
-                while (CardDeck.Instance.GetDeckCount() != 0 || Players[0].Hand.Count != 0) {
+                while (Deck.GetDeckCount() != 0 || Players[0].Hand.Count != 0) {
                     TableHand.Clear();
 
-                    if (!first && CardDeck.Instance.GetDeckCount() != 0) { //pescaggio carte
+                    if (!first && Deck.GetDeckCount() != 0) { //pescaggio carte
                         for (byte j = i; j < i + Players.Count; j++) {
                             int playerIndex = j < Players.Count ? j : j - Players.Count;
-                            Players[playerIndex].DrawCard(CardDeck.Instance.DrawCard());
+                            Players[playerIndex].DrawCard(Deck.DrawCard());
                         }
                     } else
                         first = false;
@@ -174,8 +177,8 @@ namespace Borelli_BriscolaServer.model {
             return res;
         }
 
-        private static bool IsBriscola(Card c) {
-            return CardDeck.Instance.Briscola.Suit == c.Suit;
+        private bool IsBriscola(Card c) {
+            return Deck.Briscola.Suit == c.Suit;
         }
 
 
