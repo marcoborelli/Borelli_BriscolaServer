@@ -73,6 +73,7 @@ namespace Borelli_BriscolaServer.model {
                     } else
                         first = false;
 
+                    SendMessageInBroadcastExceptAt(-1, $"play:cardRemaingNum={Deck.GetDeckCount()}");
 
                     byte origCount = (byte)(i + Players.Count);
                     while (i < origCount) { //gioco effettivo in cui ognuno mette giu' le carte
