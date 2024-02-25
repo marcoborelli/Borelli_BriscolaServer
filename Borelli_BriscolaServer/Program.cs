@@ -45,8 +45,9 @@ namespace Borelli_BriscolaServer {
                 //reg:table=<id>
                 string ress = ReadLineStream(client);
 
-                if (Regex.IsMatch(ress, @"^chiudi$")) {
+                if (ress=="chiudi") {
                     client.Close();
+                    return;
                 } else if (Regex.IsMatch(ress, @"^reg:table=(\w+)$")) {
                     string tableId = ress.Split('=')[1];
 
