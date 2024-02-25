@@ -101,6 +101,7 @@ namespace Borelli_BriscolaServer.model {
                     byte sum = 0;
                     TableHand.ForEach(x => sum += x.GetPointValue());
                     Players[i].Score += sum;
+                    Program.WriteLineStream(Players[i].ClientSocket, $"play:points={Players[i].Score}");
 
                     //play:handWinner=<username>
                     SendMessageInBroadcastExceptAt(-1, $"play:handWinner={Players[i].Name}");
