@@ -36,7 +36,7 @@ namespace Borelli_BriscolaServer {
             Console.ReadKey();*/
         }
 
-        private static void UserRegistration(TcpClient client) {
+        public static void UserRegistration(TcpClient client) {
             SendUpdateString(client);
 
             bool res = false;

@@ -115,6 +115,8 @@ namespace Borelli_BriscolaServer.model {
             List<Player> vincitori = Players.Where(x => x.Score == puntiMax).ToList();
 
             SendMessageInBroadcastExceptAt(-1, $"end:winner={String.Join(";", vincitori)};");
+
+            ResetValues();
         }
 
 
@@ -179,6 +181,14 @@ namespace Borelli_BriscolaServer.model {
 
         private bool IsBriscola(Card c) {
             return Deck.Briscola.Suit == c.Suit;
+        }
+
+        private void ResetValues() {
+            Players.ForEach(x => Task.Run(() => Program.UserRegistration(x.ClientSocket))); //vengono tutti rimandati alla fase di registrazione
+
+            Players.Clear();
+            TableHand.Clear();
+            Deck = new CardDeck();
         }
 
 
