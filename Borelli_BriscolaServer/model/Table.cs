@@ -29,10 +29,8 @@ namespace Borelli_BriscolaServer.model {
 
             //reg:res=<ok|error>
             if (Players.Exists(u => u.Name == username)) {
-                Program.WriteLineStream(socket, "reg:res=error");
                 return false;
             }
-            Program.WriteLineStream(socket, "reg:res=ok");
             Players.Add(new Player(username, socket));
 
             if (Players.Count != Players.Capacity) {
