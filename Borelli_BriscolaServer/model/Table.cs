@@ -181,6 +181,9 @@ namespace Borelli_BriscolaServer.model {
         }
 
 
+        public static explicit operator Table(string s) {
+            return new Table(s);
+        }
 
         public bool Equals(Table t) => t?.Id == this.Id;
 
