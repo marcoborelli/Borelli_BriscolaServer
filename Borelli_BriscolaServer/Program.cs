@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.IO;
 using System.Net.Sockets;
 using System.Net;
 using Borelli_BriscolaServer.model;
@@ -10,9 +11,12 @@ using Borelli_BriscolaServer.model;
 namespace Borelli_BriscolaServer {
     public class Program {
         private static List<Table> tables = new List<Table>();
+        private static short Port { get; set; }
+
         static void Main(string[] args) {
-            TcpListener serverSocket = new TcpListener(IPAddress.Any, 5000);
-            Console.WriteLine("Server avviato con successo!");
+            InitIpAndPort();
+            TcpListener serverSocket = new TcpListener(IPAddress.Any, Port);
+            Console.WriteLine($"Server avviato con successo sulla porta {Port}");
 
             TcpClient client;
 
@@ -98,6 +102,18 @@ namespace Borelli_BriscolaServer {
             int numBytes = socket.GetStream().Read(bytes, 0, socket.ReceiveBufferSize);
 
             return Encoding.ASCII.GetString(bytes, 0, numBytes).Trim();
+        }
+
+        private static void InitIpAndPort() {
+            if (!File.Exists("conf")) {
+                using (StreamWriter write = new StreamWriter("conf")) {
+                    write.WriteLine("5000");
+                }
+            }
+
+            using (StreamReader read = new StreamReader("conf")) {
+                Port = short.Parse(read.ReadLine());
+            }
         }
     }
 }
