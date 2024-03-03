@@ -21,6 +21,7 @@ namespace Borelli_BriscolaServer {
             TcpClient client;
 
             tables.Add(new Table("amanpreet", 4));
+            tables.Add(new Table("prova2"));
 
             serverSocket.Start();
 
@@ -31,13 +32,6 @@ namespace Borelli_BriscolaServer {
 
                 Task.Run(() => UserRegistration(client, false));
             }
-            /*for (int i = 0; i < 40; i++) {
-                Console.WriteLine($"'{CardDeck.Instance.DrawCard()}'");
-            }
-
-            Console.WriteLine($"Briscola è: '{CardDeck.Instance.Briscola}'");
-
-            Console.ReadKey();*/
         }
 
         public static void UserRegistration(TcpClient client, bool isReplay) {
