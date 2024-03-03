@@ -46,6 +46,11 @@ namespace Borelli_BriscolaServer.model {
             Hand.Add(c);
         }
 
+        public void ResetValues() {
+            Score = 0;
+            Hand.Clear();
+        }
+
 
 
         public bool Equals(Player p) {

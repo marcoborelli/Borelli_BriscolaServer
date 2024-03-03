@@ -80,6 +80,10 @@ namespace Borelli_BriscolaServer {
             } ;
         }
 
+        public static void DeleteTable(Table t) {
+            tables.Remove(t);
+        }
+
         private static void SendUpdateString(TcpClient client) {
             //preReg:<id,MaxPart,Part>;...
             WriteLineStream(client, $"preReg:{String.Join(";", tables)};");
