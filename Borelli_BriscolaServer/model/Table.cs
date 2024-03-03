@@ -184,7 +184,7 @@ namespace Borelli_BriscolaServer.model {
         }
 
         private void ResetValues() {
-            Players.ForEach(x => Task.Run(() => Program.UserRegistration(x.ClientSocket))); //vengono tutti rimandati alla fase di registrazione
+            Players.ForEach(x => Task.Run(() => Program.UserRegistration(x.ClientSocket, false))); //vengono tutti rimandati alla fase di registrazione
 
             Players.Clear();
             TableHand.Clear();

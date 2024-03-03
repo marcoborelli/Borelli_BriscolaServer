@@ -29,7 +29,7 @@ namespace Borelli_BriscolaServer {
                 client = serverSocket.AcceptTcpClient();
                 Console.WriteLine("Un utente sta provando a registrarsi");
 
-                Task.Run(() => UserRegistration(client));
+                Task.Run(() => UserRegistration(client, false));
             }
             /*for (int i = 0; i < 40; i++) {
                 Console.WriteLine($"'{CardDeck.Instance.DrawCard()}'");
@@ -40,16 +40,17 @@ namespace Borelli_BriscolaServer {
             Console.ReadKey();*/
         }
 
-        public static void UserRegistration(TcpClient client) {
-            SendUpdateString(client);
+        public static void UserRegistration(TcpClient client, bool isReplay) {
+            if (!isReplay)
+                SendUpdateString(client);
 
             bool res = false;
 
-            do {
+            while (!res && !isReplay) {
                 //reg:table=<id>
                 string ress = ReadLineStream(client);
 
-                if (ress=="chiudi") {
+                if (ress == "chiudi") {
                     client.Close();
                     return;
                 } else if (Regex.IsMatch(ress, @"^reg:table=(\w+)$")) {
@@ -82,7 +83,7 @@ namespace Borelli_BriscolaServer {
                     SendUpdateString(client);
                 }
 
-            } while (!res);
+            } ;
         }
 
         private static void SendUpdateString(TcpClient client) {
