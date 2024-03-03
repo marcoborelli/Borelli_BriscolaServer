@@ -117,6 +117,26 @@ namespace Borelli_BriscolaServer.model {
             SendMessageInBroadcastExceptAt(-1, $"end:winner={String.Join(";", vincitori)};");
 
             ResetValues();
+            for (sbyte p = 0; p < Players.Count; p++) {
+                Player tmp = Players[p];
+                bool res = PlayAgain(tmp);
+
+                if (!res) {
+                    Players.RemoveAt(p--);
+                } else {
+                    tmp.ResetValues();
+                }
+
+                Program.WriteLineStream(tmp.ClientSocket, $"end:closeForm");
+                Task.Run(() => Program.UserRegistration(tmp.ClientSocket, res)); //viene rimandato alla pagina
+            }
+
+            if (Players.Count != 0) {
+                SendMessageInBroadcastExceptAt(-1, "reg:state=start");
+                Task.Run(Play);
+            } else {
+                Program.DeleteTable(this);
+            }
         }
 
 
@@ -184,11 +204,13 @@ namespace Borelli_BriscolaServer.model {
         }
 
         private void ResetValues() {
-            Players.ForEach(x => Task.Run(() => Program.UserRegistration(x.ClientSocket, false))); //vengono tutti rimandati alla fase di registrazione
-
-            Players.Clear();
             TableHand.Clear();
             Deck = new CardDeck();
+        }
+
+        private bool PlayAgain(Player p) {
+            string readed = Program.ReadLineStream(p.ClientSocket);
+            return bool.Parse(readed.Split('=')[1]);
         }
 
 
