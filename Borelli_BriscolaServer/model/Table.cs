@@ -45,7 +45,7 @@ namespace Borelli_BriscolaServer.model {
         }
 
         public void Play() {
-            byte i = 0;
+            byte i = (byte)(new Random().Next(0, Players.Count));
             bool first = true;
 
             try {
