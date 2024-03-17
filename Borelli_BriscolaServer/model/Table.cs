@@ -106,8 +106,14 @@ namespace Borelli_BriscolaServer.model {
                     //play:handWinner=<username>
                     SendMessageInBroadcastExceptAt(-1, $"play:handWinner={Players[i].Name}");
                 }
-            } catch (Exception e) {
-                throw new Exception(e.Message);
+            } catch {
+                SendMessageInBroadcastExceptAt(-1, $"play:error");
+
+                Players.ForEach(x => { Task.Run(() => Program.UserRegistration(x.ClientSocket, false)); }); //vengono tutti rimandati in fase di registrazione
+                Players.Clear();
+                ResetValues();
+
+                return;
             }
 
 
