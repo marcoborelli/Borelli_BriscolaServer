@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 using System.Threading;
 
 namespace Borelli_BriscolaServer.model {
+
+    public enum eJoinResult {
+        Success,
+        NameExisting,
+        Error
+    }
+
     public class Table : IEquatable<Table> {
         public List<Player> Players { get; private set; }
         private List<Card> TableHand { get; set; }
@@ -23,13 +30,13 @@ namespace Borelli_BriscolaServer.model {
             Id = id;
         }
 
-        public bool AddPlayer(TcpClient socket) {
+        public eJoinResult AddPlayer(TcpClient socket) {
             //reg:username=<nome>
             string username = Program.ReadLineStream(socket).Split('=')[1];
 
             //reg:res=<ok|error>
             if (Players.Exists(u => u.Name == username)) {
-                return false;
+                return eJoinResult.NameExisting;
             }
             Players.Add(new Player(username, socket));
 
@@ -41,7 +48,7 @@ namespace Borelli_BriscolaServer.model {
                 Task.Run(Play);
             }
 
-            return true;
+            return eJoinResult.Success;
         }
 
         public void Play() {

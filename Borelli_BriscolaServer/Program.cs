@@ -52,7 +52,8 @@ namespace Borelli_BriscolaServer {
 
                     int tableIndex = tables.IndexOf(new Table(tableId));
                     if (tableIndex != -1) {
-                        res = tables[tableIndex].AddPlayer(client);
+                        eJoinResult tmpRes = tables[tableIndex].AddPlayer(client);
+                        res = (tmpRes != eJoinResult.NameExisting); //bool tenuto per retrocompatibilita' con vecchio codice
 
                         if (!res) {
                             Program.WriteLineStream(client, "reg:addUserRes=error");
@@ -77,7 +78,7 @@ namespace Borelli_BriscolaServer {
                     SendUpdateString(client);
                 }
 
-            } ;
+            };
         }
 
         public static void DeleteTable(Table t) {
