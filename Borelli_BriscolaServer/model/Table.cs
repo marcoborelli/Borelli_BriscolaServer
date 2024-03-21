@@ -40,12 +40,29 @@ namespace Borelli_BriscolaServer.model {
             }
             Players.Add(new Player(username, socket));
 
-            if (Players.Count != Players.Capacity) {
-                //reg:update=<username>;...
-                SendMessageInBroadcastExceptAt(-1, $"reg:update={String.Join(";", Players)};"); //si aggiornano anche gli altri giocatori che se ne e' unito uno nuovo
-            } else {
-                SendMessageInBroadcastExceptAt(-1, "reg:state=start");
-                Task.Run(Play);
+            try {
+                if (Players.Count != Players.Capacity) {
+                    //reg:update=<username>;...
+                    SendMessageInBroadcastExceptAt(-1, $"reg:update={String.Join(";", Players)};"); //si aggiornano anche gli altri giocatori che se ne e' unito uno nuovo
+                } else {
+                    SendMessageInBroadcastExceptAt(-1, "reg:state=start");
+                    Task.Run(Play);
+                }
+            } catch {
+                for (byte e = 0; e < Players.Count; e++) {
+                    try {
+                        TcpClient clientTmp = Players[e].ClientSocket;
+                        Program.WriteLineStream(clientTmp, "reg:error");
+
+                        if (e != Players.Count - 1) //l'ultimo che e' arrivato e' ancora nel suo thread originale, senno' ne farei partire due che si darebbero fastidio
+                            Task.Run(() => Program.UserRegistration(clientTmp, false));
+                    } catch {
+                        continue;
+                    }
+                }
+
+                Players.Clear();
+                return eJoinResult.Error;
             }
 
             return eJoinResult.Success;

@@ -53,9 +53,9 @@ namespace Borelli_BriscolaServer {
                     int tableIndex = tables.IndexOf(new Table(tableId));
                     if (tableIndex != -1) {
                         eJoinResult tmpRes = tables[tableIndex].AddPlayer(client);
-                        res = (tmpRes != eJoinResult.NameExisting); //bool tenuto per retrocompatibilita' con vecchio codice
+                        res = (tmpRes != eJoinResult.NameExisting && tmpRes != eJoinResult.Error); //bool tenuto per retrocompatibilita' con vecchio codice
 
-                        if (!res) {
+                        if (tmpRes == eJoinResult.NameExisting) {
                             Program.WriteLineStream(client, "reg:addUserRes=error");
                         }
                     }
