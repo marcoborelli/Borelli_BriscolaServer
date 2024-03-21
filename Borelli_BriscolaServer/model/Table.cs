@@ -107,9 +107,16 @@ namespace Borelli_BriscolaServer.model {
                     SendMessageInBroadcastExceptAt(-1, $"play:handWinner={Players[i].Name}");
                 }
             } catch {
-                SendMessageInBroadcastExceptAt(-1, $"play:error");
+                for (byte e = 0; e < Players.Count; e++) {
+                    try {
+                        TcpClient clientTmp = Players[e].ClientSocket; //senno' potrei resettare la lista prima che il task sia effettivamente partito
+                        Program.WriteLineStream(clientTmp, "play:error");
+                        Task.Run(() => Program.UserRegistration(clientTmp, false));
+                    } catch {
+                        continue;
+                    }
+                }
 
-                Players.ForEach(x => { Task.Run(() => Program.UserRegistration(x.ClientSocket, false)); }); //vengono tutti rimandati in fase di registrazione
                 Players.Clear();
                 ResetValues();
 
