@@ -78,7 +78,7 @@ namespace Borelli_BriscolaServer {
                     SendUpdateString(client);
                 }
 
-            };
+            }
         }
 
         public static void DeleteTable(Table t) {
@@ -98,10 +98,19 @@ namespace Borelli_BriscolaServer {
         }
 
         public static string ReadLineStream(TcpClient socket) {
-            byte[] bytes = new byte[socket.ReceiveBufferSize];
-            int numBytes = socket.GetStream().Read(bytes, 0, socket.ReceiveBufferSize);
+            Stream stream = socket.GetStream(); //per leggere fino al \n (a volte il s.o. concatena piu' messaggi insieme che devono essere separati)
+            string res = "";
 
-            return Encoding.ASCII.GetString(bytes, 0, numBytes).Trim();
+            int i;
+            while ((i = stream.ReadByte()) != -1) {
+                char c = (char)i;
+                if (c == '\n')
+                    break;
+
+                res += $"{c}";
+            }
+
+            return res;
         }
 
         private static void InitIpAndPort() {
